@@ -2,7 +2,7 @@
 
 SOMEtime is a passive plugin for the security scanner BurpSuite which will monitor HTTP Request and Responses to determine if a webpage is vulnerable to Same Origin Method Execution.
 
-For more details on Same Origin Method Execution see [Ben Hayak's talk](https://www.youtube.com/watch?v=UfYfID_r7-U) or our post on [LinkedIn](https://security.linkedin.com/link)
+For more details on Same Origin Method Execution see [Ben Hayak's talk](https://www.youtube.com/watch?v=UfYfID_r7-U) or our post on [LinkedIn](https://security.linkedin.com/posts/2016/finding-same-origin-method-execution-vulnerabilities)
 
 ##How To Use - Burp Pro Passive Scanner Plugin
 
