@@ -114,7 +114,8 @@ public class BurpExtender implements IBurpExtender, IScannerCheck {
 
       // checks for JSONP endpoint problems, find SOME by using the JSONP endpoint
       //   look for value({
-      Pattern pattern = Pattern.compile(p.getValue()+"\\(\\{");
+      String escapedParam = Pattern.quote(p.getValue());
+      Pattern pattern = Pattern.compile(escapedParam+"\\(\\{");
       Matcher m = pattern.matcher(responseBody);
       if( m.find() ) {
         // check that this parameter value has been passed previously
@@ -126,7 +127,7 @@ public class BurpExtender implements IBurpExtender, IScannerCheck {
 
           // capture what appears to be the method name
           //   and check that it is actually a value that is stored
-          Pattern pattern2 = Pattern.compile("\\.?(\\w*" + p.getValue() + ")\\(\\{");
+          Pattern pattern2 = Pattern.compile("\\.?(\\w*" + escapedParam + ")\\(\\{");
           Matcher m2 = pattern2.matcher(responseBody);
           while( m2.find() ) {
             if( lastParamValues.contains(m2.group(1)) ) {
