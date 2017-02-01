@@ -103,7 +103,8 @@ public class BurpExtender implements IBurpExtender, IScannerCheck {
         String jsCode = tag.html();
         // check that we are executing javascript with our parameter value as a method name
         //  this would find things like <script>opener.{callback}({jsonp}) or <script>{callback}( {jsonp} )</script>
-        if( jsCode.contains(p.getValue() + "({") ) {
+        Pattern alphaNum = Pattern.compile("[^a-zA-Z0-9\\.]");
+        if( jsCode.contains(p.getValue() + "({") && Character.toString(jsCode.charAt((jsCode.indexOf(p.getValue()+"({"))-1)).matches("[^a-zA-Z0-9\\.]") ) {
           String detail = "Same Origin Method Execution might be possible. This is rated as high severity because it appears the callback parameter"
               + " is specifying which method to directly call in the response under a Javascript context."
               + " Search for <b>" + p.getValue() + "({</b> in the response to determine validity.";
