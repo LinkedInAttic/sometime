@@ -102,20 +102,20 @@ public class BurpExtender implements IBurpExtender, IScannerCheck {
         // get code between the script tags
         String jsCode = tag.html();
         // check that we are executing javascript with our parameter value as a method name
-        //  this would find things like <script>opener.{callback}({jsonp}) or <script>{callback}( {jsonp} )</script>
-        if( jsCode.contains(p.getValue() + "({") ) {
+        //  this would find things like <script>opener.{callback}(jsonp) or <script>{callback}( jsonp )</script>
+        if( jsCode.contains(p.getValue() + "(") ) {
           String detail = "Same Origin Method Execution might be possible. This is rated as high severity because it appears the callback parameter"
               + " is specifying which method to directly call in the response under a Javascript context."
-              + " Search for <b>" + p.getValue() + "({</b> in the response to determine validity.";
+              + " Search for <b>" + p.getValue() + "(</b> in the response to determine validity.";
           issues.add( new SOMEIssue(baseRequestResponse, "High", "Certain", detail) );
           return issues;
         }
       }
 
       // checks for JSONP endpoint problems, find SOME by using the JSONP endpoint
-      //   look for value({
+      //   look for value(
       String escapedParam = Pattern.quote(p.getValue());
-      Pattern pattern = Pattern.compile(escapedParam+"\\(\\{");
+      Pattern pattern = Pattern.compile(escapedParam+"\\(");
       Matcher m = pattern.matcher(responseBody);
       if( m.find() ) {
         // check that this parameter value has been passed previously
@@ -127,14 +127,14 @@ public class BurpExtender implements IBurpExtender, IScannerCheck {
 
           // capture what appears to be the method name
           //   and check that it is actually a value that is stored
-          Pattern pattern2 = Pattern.compile("\\.?(\\w*" + escapedParam + ")\\(\\{");
+          Pattern pattern2 = Pattern.compile("\\.?(\\w*" + escapedParam + ")\\(");
           Matcher m2 = pattern2.matcher(responseBody);
           while( m2.find() ) {
             if( lastParamValues.contains(m2.group(1)) ) {
               String detail = "Same Origin Method Execution might be possible. This is rated as high severity because it appears the callback parameter"
                   + " is specifying which method to directly call in the response. It appears"
                   + " that the callback value has been passed by previous request parameters. Search for " + p.getValue()
-                  + " in the previous request parameters. To determine if it is a false positive search for <b>" + p.getValue() + "({"
+                  + " in the previous request parameters. To determine if it is a false positive search for <b>" + p.getValue() + "("
                       + "</b> and manually verify in the response.";
               issues.add( new SOMEIssue(baseRequestResponse, "High", "Certain", detail) );
               return issues;
@@ -212,7 +212,7 @@ public class BurpExtender implements IBurpExtender, IScannerCheck {
     }
 
     public String getRemediationBackground() {
-        return "<b>If a user-defined callback is necessary for the application to work:<ul>" + 
+        return "<b>If a user-defined callback is necessary for the application to work:<ul>" +
             "<li>User's function names should not be executed as Javascript unless they match a whitelist</li>" +
            "<li>Alternatively, use postMessage for cross-domain functionality</li></ul>";
     }
